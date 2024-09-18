@@ -1,8 +1,6 @@
-from django.contrib.auth import logout, login, authenticate
-from django.contrib.auth.models import User
 from django.core.cache import cache
 
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -11,59 +9,7 @@ from decouple import config
 
 from .models import Shipment, Article
 from .permissions import IsAuthenticatedForWriteOnly
-from .serializers import ShipmentSerializer, ArticleSerializer, UserSerializer
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet for handling user-related operations including registration, login, and logout.
-    """
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [permissions.AllowAny]
-
-    @action(detail=False, methods=['post'])
-    def register(self, request):
-        """
-        Register a new user.
-        """
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"status": "User created successfully"})
-        return Response(serializer.errors, status=400)
-
-    @action(detail=False, methods=['post'])
-    def login(self, request):
-        """
-        Login a user using session authentication.
-        """
-        username = request.data.get('username')
-        password = request.data.get('password')
-
-        user = authenticate(username=username, password=password)
-
-        if user is not None:
-            login(request, user)
-            return Response({"status": "Logged in successfully using session"})
-        return Response({"error": "Invalid credentials"}, status=401)
-
-    @action(detail=False, methods=['post'])
-    def logout(self, request):
-        """
-        Logout the current user.
-        """
-        logout(request)
-        return Response({"status": "Logged out successfully from session"})
-
-    @action(detail=True, methods=['delete'])
-    def unregister(self, request, pk=None):
-        """
-        Delete a user.
-        """
-        user = self.get_object()
-        user.delete()
-        return Response({"status": "User deleted successfully"})
+from .serializers import ShipmentSerializer, ArticleSerializer
 
 
 class ShipmentViewSet(viewsets.ModelViewSet):

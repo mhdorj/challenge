@@ -1,62 +1,6 @@
-from django.contrib.auth import get_user_model
 from rest_framework.test import APITestCase
 from rest_framework import status
 from ..models import Shipment, Article
-
-
-User = get_user_model()
-
-
-class UserViewSetTests(APITestCase):
-
-    def test_register_user(self):
-        url = '/users/register/'
-        data = {
-            'username': 'testuser',
-            'password': 'testpassword',
-            'email': 'testuser@example.com'
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {"status": "User created successfully"})
-
-    def test_login_user(self):
-        User.objects.create_user(username='testuser', password='testpassword')
-        url = '/users/login/'
-        data = {
-            'username': 'testuser',
-            'password': 'testpassword'
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {"status": "Logged in successfully using session"})
-
-    def test_login_invalid_credentials(self):
-        url = '/users/login/'
-        data = {
-            'username': 'testuser',
-            'password': 'wrongpassword'
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(response.data, {"error": "Invalid credentials"})
-
-    def test_logout_user(self):
-        User.objects.create_user(username='testuser', password='testpassword')
-        self.client.login(username='testuser', password='testpassword')
-        url = '/users/logout/'
-        response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {"status": "Logged out successfully from session"})
-
-    def test_unregister_user(self):
-        user = User.objects.create_user(username='testuser', password='testpassword')
-        self.client.login(username='testuser', password='testpassword')
-        url = f'/users/{user.id}/unregister/'
-        response = self.client.delete(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {"status": "User deleted successfully"})
-        self.assertFalse(User.objects.filter(id=user.id).exists())
 
 
 class ShipmentViewSetTests(APITestCase):
