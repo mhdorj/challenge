@@ -1,0 +1,41 @@
+# Python bytecode files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Django
+*.log
+db.sqlite3
+media/
+staticfiles/
+*.pot
+
+# Environments
+.env
+.venv/
+venv/
+ENV/
+env/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Coverage reports
+.coverage
+*.cover
+*.py,cover
+
+# MyPy
+.mypy_cache/
+
+# Pyre type checker
+.pyre/
+
+# PyCharm
+.idea/
+
+# Other files
+*.swp
+*.swo
+*.swn
+*.DS_Store
